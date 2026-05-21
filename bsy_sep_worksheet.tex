@@ -50,6 +50,22 @@ Es genügt die Überlegung für ein Rechnersystem mit einem Cache-Level.
 h_c = \hspace{7cm}
 \]
 
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 1}]
+\textbf{Antwort:} $h_c = \mathbf{75\%}$ oder $\mathbf{0.75}$
+
+\textbf{Warum:} Die Hitrate wird durch die Anzahl der Array-Elemente bestimmt, die in eine Cache Line passen. Bei 32-Bit Prozessoren ist ein \texttt{int} = 4 Bytes. Mit 64-Byte Cache Line passen $64 / 4 = 16$ Elemente in eine Line.
+
+\textbf{Merksatz für die Prüfung:} \textit{``Bei sequenziellem Zugriff: erste Zugriff auf die Cache Line ist Miss, die restlichen sind Hits $\rightarrow 15/16 = 93.75\%$ ABER komplett richtig: nur 12 Zugriffe (3 * 4 Elemente) = $12/16 = 75\%$}
+
+\textbf{Schritt-für-Schritt:}
+\begin{enumerate}[leftmargin=*]
+  \item Cache Line: 64 Bytes $\div$ 4 Bytes/int = 16 Elemente pro Line
+  \item Bei Zugriff: 1 Miss (erste Element), 15 Hits (restliche Elemente)
+  \item Aber im Loop werden nur 3 komplette Zeilen gefüllt, dann 1 Teilzugriff
+  \item Korrekt: $\frac{12 \text{ Hits}}{16 \text{ Zugriffe}} = 75\%$
+\end{enumerate}
+\end{tcolorbox}
+
 \section{Aufgabe 2: Speicherzugriffszeit (1.0P)}
 Ein 2~GHz Prozessor (2~GHz entspricht einem Clockzyklus von 0.5~ns) hat eine dreistufige Cache-Hierarchie.
 
@@ -71,6 +87,23 @@ Wie gross ist die mittlere Speicherzugriffszeit $T_a$, wenn die Hitrate auf jede
 \[
 T_a = \hspace{7cm}
 \]
+
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 2}]
+\textbf{Antwort:} $T_a = \mathbf{2.76 \text{ ns}}$
+
+\textbf{Warum:} Die mittlere Zugriffszeit wird durch die gewichtete Summe aller Cache-Ebenen mit ihren Missraten berechnet. Obwohl RAM 60 ns kostet, ist die Missrate dort extrem klein (0.1\%).
+
+\textbf{Merksatz für die Prüfung:} \textit{``Formel: $T_a = T_1 + m_1 \times (T_2 + m_2 \times (T_3 + m_3 \times T_{mem}))$ -- von innen nach außen rechnen!''}
+
+\textbf{Schritt-für-Schritt:}
+\begin{enumerate}[leftmargin=*]
+  \item Einheiten: L1 = $4 \times 0.5 = 2$ ns, L2 = $10 \times 0.5 = 5$ ns, L3 = $40 \times 0.5 = 20$ ns, RAM = 60 ns
+  \item Missrate pro Level: $m = 1 - 0.9 = 0.1$
+  \item Innerste Klammer: $20 + (0.1 \times 60) = 26.0$ ns
+  \item Mittlere Klammer: $5 + (0.1 \times 26) = 7.6$ ns
+  \item Äußere Klammer: $2 + (0.1 \times 7.6) = 2.76$ ns
+\end{enumerate}
+\end{tcolorbox}
 
 \section{Aufgabe 3: Make (a) 1.0P, (b) 1.0P)}
 Gegeben ist folgendes Makefile:
@@ -110,8 +143,42 @@ total 144
 \subsection*{a)}
 Geben Sie die Namen derjenigen C-Files an, die durch den Aufruf von \texttt{make} übersetzt werden.
 
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 3a}]
+\textbf{Antwort:} \textbf{mylist.c} und \textbf{queues.c}
+
+\textbf{Warum:} Make vergleicht Zeitstempel: Nur wenn .c-Datei NEUER als .o-Datei ist, wird neu kompiliert.
+
+\textbf{Merksatz für die Prüfung:} \textit{``Das Bauleiter-Gedächtnis: Make schaut, welche Teile NACH der letzten Inspektion verändert wurden.''}
+
+\textbf{Schritt-für-Schritt:}
+\begin{enumerate}[leftmargin=*]
+  \item main1.c (09:16) vs. main1.o (09:21): .o ist NEUER $\rightarrow$ Keine Übersetzung
+  \item mylist.c (09:31) vs. mylist.o (09:21): .c ist NEUER $\rightarrow$ \textbf{Übersetzung!}
+  \item mythread.c (09:16) vs. mythread.o (09:21): .o ist NEUER $\rightarrow$ Keine Übersetzung
+  \item queues.c (09:25) vs. queues.o (09:21): .c ist NEUER $\rightarrow$ \textbf{Übersetzung!}
+  \item scheduler.c (09:16) vs. scheduler.o (09:21): .o ist NEUER $\rightarrow$ Keine Übersetzung
+\end{enumerate}
+\end{tcolorbox}
+
 \subsection*{b)}
 Wie heisst das ausführbare File, das durch den Aufruf von \texttt{make} erzeugt wird?
+
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 3b}]
+\textbf{Antwort:} \textbf{app.e}
+
+\textbf{Warum:} In der Make-Regel steht \texttt{-o \$@.e}. Die Variable \texttt{\$@} wird durch den Target-Namen ersetzt. Der Target ist \texttt{app}.
+
+\textbf{Merksatz für die Prüfung:} \textit{``Make-Variablen: \$@ = Target-Name, \$< = erste Dependency, \$^ = alle Dependencies.''}
+
+\textbf{Schritt-für-Schritt:}
+\begin{enumerate}[leftmargin=*]
+  \item Die Regel ist: \texttt{app: main1.o ...}
+  \item Target = \texttt{app}
+  \item Befehl: \texttt{\$(CMP) ... -o \$@.e}
+  \item \$@ wird zu \texttt{app} expandiert
+  \item Ergebnis: \texttt{app.e}
+\end{enumerate}
+\end{tcolorbox}
 
 \section{Aufgabe 4: Prozesserzeugung ((a) 1.0P, (b) 0.5P)}
 Gegeben ist folgender Codeausschnitt:
@@ -135,12 +202,46 @@ Wie viele Prozesse werden mit diesem Codesausschnitt zusätzlich erzeugt?
 \text{Anzahl} = \hspace{5cm}
 \]
 
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 4a}]
+\textbf{Antwort:} \textbf{5 zusätzliche Prozesse} (insgesamt 6 Prozesse: P0--P5)
+
+\textbf{Warum:} Jedes \texttt{fork()} erzeugt einen neuen Prozess. Es gibt 4 fork()-Aufrufe, aber P0 startet am Anfang bereits.
+
+\textbf{Merksatz für die Prüfung:} \textit{``fork() verdoppelt an dieser Stelle: Jeder if/else-Zweig kann neue Forks ausführen! Prozessbaum zeichnen!''} 
+
+\textbf{Schritt-für-Schritt:}
+\begin{enumerate}[leftmargin=*]
+  \item Starten mit P0
+  \item Fork 1: P0 erzeugt P1 (P0 geht in if, P1 in else)
+  \item Fork 2 (in if): P0 erzeugt P2
+  \item Fork 3 (in else): P1 erzeugt P3
+  \item Fork 4 (in else): P1 erzeugt P4, P3 erzeugt P5
+  \item Gesamtprozesse: P0, P1, P2, P3, P4, P5 = 6 Prozesse
+  \item Zusätzlich erzeugt: 5 (P1, P2, P3, P4, P5)
+\end{enumerate}
+\end{tcolorbox}
+
 \subsection*{b)}
 Wie oft wird \texttt{Hello World} ausgegeben?
 
 \[
 \text{Anzahl} = \hspace{5cm}
 \]
+
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 4b}]
+\textbf{Antwort:} \textbf{2 mal}
+
+\textbf{Warum:} Die Bedingung \texttt{if (fork() > 0)} wird nur von den PARENT-Prozessen erfüllt (wenn fork() \textasciigrave > 0 zurückgibt). Das sind nur P1 und P3.
+
+\textbf{Merksatz für die Prüfung:} \textit{``fork()-Rückgabewert: Parent erhält PID (> 0), Child erhält 0. Nur wer Parent ist, erfüllt die if-Bedingung!''}
+
+\textbf{Schritt-für-Schritt:}
+\begin{enumerate}[leftmargin=*]
+  \item P1 führt Fork 4 aus $\rightarrow$ P1 ist Parent von P4 $\rightarrow$ if-Bedingung TRUE $\rightarrow$ 1. Ausgabe
+  \item P3 führt Fork 4 aus $\rightarrow$ P3 ist Parent von P5 $\rightarrow$ if-Bedingung TRUE $\rightarrow$ 2. Ausgabe
+  \item P0, P2, P4, P5 erfüllen die Bedingung nicht
+\end{enumerate}
+\end{tcolorbox}
 
 \section{Aufgabe 5: Real Time Scheduling (2.0P)}
 Gegeben sind 3 periodische Echtzeit-Tasks mit folgenden Daten:
@@ -175,6 +276,40 @@ Task 2 & & & & & & & & & & & & & \\
 Task 3 & & & & & & & & & & & & & \\
 \hline
 \end{tabular}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 5}]
+\textbf{Antwort - Balkendiagramm (t=0 bis t=24):}
+
+\textbf{Warum:} Der Earliest Deadline First (EDF) Algorithmus wählt immer den Task mit der nächsten Deadline. Bei Gleichheit gewinnt die kürzere Periode (Tie-Breaker).
+
+\textbf{Merksatz für die Prüfung:} \textit{``EDF: Deadline = Periodende. Bei gleicher Deadline: kürzere Periode gewinnt. Auslastung: $1/4 + 4/8 + 3/12 = 1.0 = 100\%$!''}
+
+\textbf{Vereinfacht - Ablauf:}
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{0-1ms:} T1 (Deadline 4ms) $\rightarrow$ fertig
+  \item \textbf{1-4ms:} T2 (Deadline 8ms) $\rightarrow$ 3ms gerechnet
+  \item \textbf{4-5ms:} T1 neu (Deadline 8ms) -- Tie-Breaker: T1 Periode 4 < T2 Periode 8 $\rightarrow$ T1 übernimmt
+  \item \textbf{5-6ms:} T2 Rest 1ms fertig
+  \item \textbf{6-8ms:} T3 (Deadline 12ms) $\rightarrow$ 2ms gerechnet
+  \item \textbf{8-9ms:} T1 neu (Deadline 12ms) -- Tie-Breaker: T1 gewinnt wieder
+  \item \textbf{9-10ms:} T3 Rest 1ms fertig
+  \item \textbf{10-12ms:} T2 neu (Deadline 16ms) $\rightarrow$ 2ms gerechnet
+  \item \textit{Muster wiederholt sich alle 24ms}
+\end{enumerate}
+
+\textbf{Im Diagramm eintragen:}
+\begin{center}
+\begin{tabular}{|c|ccccccccccccc|}
+\hline
+& 0 & 4 & 8 & 12 & 16 & 20 & 24 \\
+\hline
+Task 1 & 1ms & 1ms & 1ms & 1ms & 1ms & 1ms & 1ms \\
+Task 2 & 3ms & 1ms & 2ms & 4ms & 2ms & 4ms & 2ms \\
+Task 3 & & 2ms & 1ms & 3ms & 1ms & 3ms & 1ms \\
+\hline
+\end{tabular}
+\end{center}
 \end{tcolorbox}
 
 \section{Aufgabe 6: Scheduling (2.0P)}
@@ -218,6 +353,49 @@ $P_5$ & & & & & & & & & & & & & & & \\
 \end{tabular}
 \end{center}
 
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 6}]
+\textbf{Antwort - Schedule:}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Zeit & Prozess (Q=1 Timeslot) \\
+\hline
+0-1 & P1 \\
+1-2 & P2 \\
+2-3 & P3 \\
+3-4 & P1 (Prio 0 nächster in Queue) \\
+4-5 & P2 \\
+5-6 & P3 \\
+6-7 & P1 \\
+7-8 & P4 \\
+8-9 & P2 \\
+9-10 & P1 \\
+10-11 & P4 \\
+11-12 & P2 \\
+12-13 & P5 \\
+13-14 & P1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Warum:} Multilevel Queue nach Priorität. Prio 1 (P2, P3) vor Prio 0. Innerhalb gleicher Priorität: Round Robin mit Q=1.
+
+\textbf{Merksatz für die Prüfung:} \textit{``Multilevel: Erst alle HIGH-Prio, dann alle LOW-Prio. Jeder bekommt Q=1 Timeslot, dann Warteschlange (Queue) hinten angestellt.''}
+
+\textbf{Schritt-für-Schritt:}
+\begin{enumerate}[leftmargin=*]
+  \item Prio 1 Queue: P2 (ankommt t=1), P3 (ankommt t=2)
+  \item Prio 0 Queue: P1 (ankommt t=0), P4 (ankommt t=5), P5 (ankommt t=7)
+  \item t=0: Nur P1 bereit $\rightarrow$ P1 rechnet 1ms
+  \item t=1: P2 ankommt (Prio 1 > 0) $\rightarrow$ P2 startet
+  \item t=2: P3 ankommt (Prio 1) $\rightarrow$ P3 startet, P2 in Queue
+  \item t=3: P2 bereit (Prio 1) $\rightarrow$ P2 rechnet, P3 in Queue
+  \item t=4-5: Prio 1 verbraucht $\rightarrow$ P1 zurück (Prio 0)
+  \item Und so weiter mit Round Robin innerhalb jeder Priorität...
+\end{enumerate}
+\end{tcolorbox}
+
 \section{Aufgabe 7: Kurzfragen (0.5P pro Antwort, total 3P)}
 Pro Teilfrage können eine, mehrere oder keine Antworten zutreffen.
 Kreuzen Sie die richtige(n) Antwort(en) an.
@@ -237,6 +415,14 @@ Ein Programm führt unten stehende Aktivitäten aus. Für welche dieser Aktivit�
   \item $\square$ Den Wert einer Fliesskomma-Variablen um eins erhöhen
 \end{itemize}
 
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 7a}]
+\textbf{Richtig:} \checkmark Bildschirm ausgeben, \checkmark 1 Sekunde schlafen
+
+\textbf{Warum:} System-Calls sind nur nötig für privilegierte Operationen (I/O, Scheduling). Einfache Berechnungen brauchen keinen System-Call.
+
+\textbf{Merksatz:} \textit{``System-Calls nur für I/O, Prozessverwaltung, Speicherverwaltung. Pure Arithmetik = User-Mode!''} ✓
+\end{tcolorbox}
+
 \subsection*{b)}
 Die Systemfunktion \texttt{pthread\_join()}:
 \begin{itemize}[leftmargin=*]
@@ -246,6 +432,14 @@ Die Systemfunktion \texttt{pthread\_join()}:
   \item $\square$ Blockiert die CPU, bis alle Threads terminiert haben
 \end{itemize}
 
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 7b}]
+\textbf{Richtig:} \checkmark Verhindert vorzeitige Prozess-Terminierung
+
+\textbf{Warum:} \texttt{pthread\_join()} wartet auf einen bestimmten Thread. Sie blockiert nicht die CPU, sie blockiert nur den Prozess.
+
+\textbf{Merksatz:} \textit{``join() wartet auf Thread-Ende. Falsch: alle Threads terminieren, CPU blockieren, sleep() Ersatz!''}
+\end{tcolorbox}
+
 \subsection*{c)}
 Wieso werden System-Calls über Softwareinterrupts aufgerufen?
 \begin{itemize}[leftmargin=*]
@@ -253,6 +447,14 @@ Wieso werden System-Calls über Softwareinterrupts aufgerufen?
   \item $\square$ Weil Prozeduraufrufe (CALL) nicht in den System-Mode umschalten können
   \item $\square$ Weil Anwenderprogramme die Adressen der System-Call Routinen nicht kennen
 \end{itemize}
+
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 7c}]
+\textbf{Richtig:} \checkmark Prozeduraufrufe können nicht in System-Mode umschalten
+
+\textbf{Warum:} Softwareinterrupts lösen eine CPU-Modus-Umschaltung (User $\rightarrow$ Kernel) aus, was CALL nicht kann.
+
+\textbf{Merksatz:} \textit{``Privilege Escalation: Nur Interrupts schalten in Kernel-Mode. CALL bleibt im User-Mode!''}
+\end{tcolorbox}
 
 \subsection*{d)}
 Der PCB ist ein Datenbereich:
@@ -262,6 +464,14 @@ Der PCB ist ein Datenbereich:
   \item $\square$ In dem ein Prozess kleine Datenmengen effizient zwischenspeichern kann
   \item $\square$ In dem die Prozessidentifikationsnummer abgespeichert ist
 \end{itemize}
+
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 7d}]
+\textbf{Richtig:} \checkmark Betriebssystem lagert Statusinformation, \checkmark PID ist gespeichert
+
+\textbf{Warum:} PCB (Process Control Block) ist ein Verwaltungsbereich des OS, nicht des Prozesses. Er speichert PID, Zustand, Register etc.
+
+\textbf{Merksatz:} \textit{``PCB = Betriebssystem-Struktur (nicht Prozess). Enthält: PID, State, Register, Memory-Info!''} 
+\end{tcolorbox}
 
 \subsection*{e)}
 Ein Zombie ist ein:
@@ -273,6 +483,14 @@ Ein Zombie ist ein:
   \item $\square$ Prozess, bei dem alle gestarteten Threads terminiert haben
 \end{itemize}
 
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 7e}]
+\textbf{Richtig:} \checkmark Prozess ohne gewartet (\texttt{wait()/waitpid()})
+
+\textbf{Warum:} Ein Zombie ist ein verstorbener Prozess, dessen Parent nie \texttt{wait()} aufgerufen hat. Er nimmt einen Prozess-Slot ein!
+
+\textbf{Merksatz:} \textit{``Zombie = totes Kind, dessen Parent nicht aufgeräumt hat (wait fehlt)!''}
+\end{tcolorbox}
+
 \subsection*{f)}
 Ein Daemon ist:
 \begin{itemize}[leftmargin=*]
@@ -280,5 +498,13 @@ Ein Daemon ist:
   \item $\square$ Ein Prozess ohne Kontrollterminal
   \item $\square$ Ein Prozess, der eine Shell als Elternprozess hat
 \end{itemize}
+
+\begin{tcolorbox}[colback=green!15!white,colframe=green!70!black,title=\textbf{Lösung Aufgabe 7f}]
+\textbf{Richtig:} \checkmark Ein Prozess ohne Kontrollterminal
+
+\textbf{Warum:} Daemons sind Background-Prozesse ohne Terminal. Sie haben meist \texttt{init} als Parent (nach Hängung des tatsächlichen Parents).
+
+\textbf{Merksatz:} \textit{``Daemon = Background-Worker ohne Terminal. Nicht: Virus, nicht: Shell als Parent!''}
+\end{tcolorbox}
 
 \end{document}
