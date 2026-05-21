@@ -1,0 +1,189 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+% Farben
+\definecolor{bsyblue}{HTML}{0066CC}
+\definecolor{bsygreen}{HTML}{009966}
+\definecolor{bsyred}{HTML}{CC0033}
+\definecolor{bsygray}{HTML}{444444}
+\definecolor{bsyyellow}{HTML}{FFCC00}
+\definecolor{bsybg}{HTML}{F7F9FB}
+
+% Überschriften schöner
+\titleformat{\section}{\Large\bfseries\color{bsyblue}}{}{0em}{}
+\titleformat{\subsection}{\large\bfseries\color{bsygreen}}{}{0em}{}
+
+\setlist[itemize]{leftmargin=1.2em}
+\setlist[enumerate]{leftmargin=1.4em}
+
+\begin{document}
+
+\begin{center}
+{\Huge \textbf{BSY Cheatsheet – Julia Edition}}\\[4mm]
+{\large \color{bsygray}Alle Aufgabentypen, Formeln und Schritte – idiotensicher.}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 1: Cache \& Memory Access}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsyblue,title=\textbf{Hitrate bei sequentiellem Zugriff}]
+\textbf{Gegeben:} \texttt{int} = 4B, Cacheline = 64B
+
+\[
+n_{\text{pro Line}} = \frac{64}{4} = 16
+\]
+
+\[
+h_c = \frac{16-1}{16} = \frac{15}{16} = 0.9375
+\]
+
+\textbf{Merke:} Bei sequentiellem Zugriff ist fast alles ein Hit.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsygreen,title=\textbf{AMAT – mittlere Speicherzugriffszeit}]
+
+\[
+T_a = h_1 T_1 + (1-h_1)\bigl(h_2 T_2 + (1-h_2)(h_3 T_3 + (1-h_3)T_{\text{mem}})\bigr)
+\]
+
+\textbf{Rezept:}
+\begin{enumerate}
+\item Zyklen in ns umrechnen.
+\item Formel von innen nach außen ausrechnen.
+\item Ergebnis in ns angeben.
+\end{enumerate}
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 2: Makefile}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsyblue,title=\textbf{Makefile Regeln – Minimalwissen}]
+\begin{itemize}
+\item \texttt{\$@} = Target
+\item \texttt{\$<} = erste Dependency
+\item \texttt{\$^} = alle Dependencies
+\item \textbf{.c → .o} wenn .c neuer ist als .o
+\item Executable steht in der Link-Zeile: \texttt{-o \$@.e}
+\end{itemize}
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 3: \texttt{fork()} – Prozessbäume}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsyred,title=\textbf{Rezept: Anzahl Prozesse}]
+\begin{enumerate}
+\item Prozessbaum zeichnen.
+\item Jeder \texttt{fork()} verdoppelt.
+\item Anzahl Blätter = Anzahl Prozesse.
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsygreen,title=\textbf{Rezept: Anzahl Ausgaben}]
+\begin{enumerate}
+\item Baum zeichnen.
+\item Prüfen, welche Pfade die Ausgabe erreichen.
+\item Pro Endprozess zählen.
+\end{enumerate}
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 4: Buddy System}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsyblue,title=\textbf{Rezept: interne Fragmentierung}]
+\begin{enumerate}
+\item Für jede Anfrage \(S\): kleinstes \(2^k\) suchen.
+\item Verlust: \(V = 2^k - S\)
+\item Gesamtverlust: Summe aller \(V\)
+\end{enumerate}
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 5: Paging}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsygreen,title=\textbf{Wichtigste Formeln}]
+
+\[
+\text{Page Size} = 2^{\text{OffsetBits}}
+\]
+
+\[
+N_{\text{PD}} = 2^{\text{DirectoryBits}}
+\]
+
+\[
+N_{\text{PT}} = 2^{\text{PageNumberBits}}
+\]
+
+\[
+\text{Size}_{\text{PD}} = N_{\text{PD}} \cdot \text{PointerSize}
+\]
+
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 6: Page Replacement (LRU)}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsyred,title=\textbf{LRU – idiotensicheres Rezept}]
+\begin{enumerate}
+\item Frames leer initialisieren.
+\item Für jede Page:
+\begin{itemize}
+\item Hit → Reihenfolge aktualisieren.
+\item Miss → Page Fault markieren.
+\item Freier Frame? → einfügen.
+\item Sonst → \textbf{LRU ersetzen}.
+\end{itemize}
+\item Bei Gleichstand → Frame mit kleinster Nummer.
+\end{enumerate}
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 7: Scheduling}
+
+\subsection*{Real-Time (EDF)}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsyblue,title=\textbf{EDF Rezept}]
+\begin{enumerate}
+\item Deadlines berechnen: \(D_{i,k} = kT_i\)
+\item Zu jedem Rescheduling:
+\begin{itemize}
+\item Task mit frühester Deadline wählen.
+\item Bei Gleichstand: kürzere Periode gewinnt.
+\end{itemize}
+\item Gantt-Diagramm zeichnen.
+\end{enumerate}
+\end{tcolorbox}
+
+\subsection*{Multilevel + RR(q=1)}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsygreen,title=\textbf{RR + Prioritäten Rezept}]
+\begin{enumerate}
+\item Zeitachse in 1er-Schritten.
+\item Neue Prozesse einfügen.
+\item Höchste Priorität wählen.
+\item Innerhalb: Round Robin mit \(q=1\).
+\item Burst--1, bei 0 → Prozess fertig.
+\end{enumerate}
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aufgabentyp 8: Theorie}
+
+\begin{tcolorbox}[colback=bsybg,colframe=bsyyellow,title=\textbf{Mini-Merkzettel}]
+\begin{itemize}
+\item System Calls = Kernel-Funktionen (I/O, Sleep, Prozesse)
+\item PCB = OS-Datenstruktur (Status, Register, PID)
+\item Zombie = Prozess beendet, Elternprozess hat nicht gewartet
+\item Paging = Pages und Frames \textbf{gleich gross}
+\item Interne Fragmentierung = Block zu groß
+\item Externe Fragmentierung = viele kleine Lücken
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}
