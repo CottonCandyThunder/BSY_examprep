@@ -1,0 +1,284 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\geometry{margin=2.2cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{BSY SEP -- Aufgaben-Worksheet}}\\[0.5em]
+{\large Fokus: Aufgabenstellung \& Struktur (ohne Lösungen)}
+\end{center}
+
+\begin{tcolorbox}[colback=yellow!10!white,colframe=orange!65!black,title=Allgemeine Hinweise aus dem Blatt]
+\begin{itemize}[leftmargin=*]
+  \item Korrektur: Resultate werden nur als richtig oder falsch bewertet.
+  \item Bei Multiple-Choice-Aufgaben kann pro Teilaufgabe mehr als eine Antwort zutreffen.
+  \item Eine Teilaufgabe gilt nur dann als richtig, wenn sämtliche Antworten der Teilaufgabe korrekt sind.
+  \item Resultate als ganze Zahlen bzw. mit 2 Stellen nach dem Komma angeben.
+\end{itemize}
+\end{tcolorbox}
+
+\section{Aufgabe 1: Cache Zugriffe (1.0P)}
+Gegeben ist folgender Programmausschnitt:
+
+\begin{verbatim}
+#define N (10*1000*1000)
+int arVL[N];
+for (int i = 0; i < N; i++) {
+  sum += arVL[i];
+}
+\end{verbatim}
+
+Wie gross ist auf einem 32-Bit Prozessor die Hitrate $h_c$ während dem Zugriff auf \texttt{arVL[i]},
+wenn das Data Cache eine Blockgrösse (Cache Line Size) von 64 Bytes hat?
+
+\begin{tcolorbox}[colback=blue!6!white,colframe=blue!50!black,title=Hinweis]
+Es genügt die Überlegung für ein Rechnersystem mit einem Cache-Level.
+\end{tcolorbox}
+
+\[
+h_c = \hspace{7cm}
+\]
+
+\section{Aufgabe 2: Speicherzugriffszeit (1.0P)}
+Ein 2~GHz Prozessor (2~GHz entspricht einem Clockzyklus von 0.5~ns) hat eine dreistufige Cache-Hierarchie.
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Speicherstufe} & \textbf{Zugriffszeit} \\
+\hline
+Cache Level 1 & 4 Clockzyklen \\
+Cache Level 2 & 10 Clockzyklen \\
+Cache Level 3 & 40 Clockzyklen \\
+Hauptspeicher & 60 ns \\
+\hline
+\end{tabular}
+\end{center}
+
+Wie gross ist die mittlere Speicherzugriffszeit $T_a$, wenn die Hitrate auf jedem Level 90\% beträgt?
+
+\[
+T_a = \hspace{7cm}
+\]
+
+\section{Aufgabe 3: Make (a) 1.0P, (b) 1.0P)}
+Gegeben ist folgendes Makefile:
+
+\begin{verbatim}
+CFL = -g
+CMP = gcc $(CFL)
+
+app: main1.o mythread.o scheduler.o queues.o mylist.o
+$(CMP) main1.o mythread.o scheduler.o queues.o mylist.o -o $@.e
+
+.c.o:
+$(CMP) -c $<
+\end{verbatim}
+
+Und ein Listing (\texttt{ls -al}) des Verzeichnisses, in dem \texttt{make} ausgeführt wird:
+
+\begin{verbatim}
+total 144
+-rw-r--r-- ... main1.c
+-rw-r--r-- ... main1.o
+-rw-r--r-- ... makefile
+-rw-r--r-- ... mylist.c
+-rw-r--r-- ... mylist.h
+-rw-r--r-- ... mylist.o
+-rw-r--r-- ... mythread.c
+-rw-r--r-- ... mythread.h
+-rw-r--r-- ... mythread.o
+-rw-r--r-- ... queues.c
+-rw-r--r-- ... queues.h
+-rw-r--r-- ... queues.o
+-rw-r--r-- ... scheduler.c
+-rw-r--r-- ... scheduler.h
+-rw-r--r-- ... scheduler.o
+\end{verbatim}
+
+\subsection*{a)}
+Geben Sie die Namen derjenigen C-Files an, die durch den Aufruf von \texttt{make} übersetzt werden.
+
+\subsection*{b)}
+Wie heisst das ausführbare File, das durch den Aufruf von \texttt{make} erzeugt wird?
+
+\section{Aufgabe 4: Prozesserzeugung ((a) 1.0P, (b) 0.5P)}
+Gegeben ist folgender Codeausschnitt:
+
+\begin{verbatim}
+if (fork() > 0)
+  fork();
+else {
+  fork();
+  if (fork() > 0)
+    printf("Hello World\n");
+}
+\end{verbatim}
+
+Annahme: Alle \texttt{fork()} werden erfolgreich ausgeführt.
+
+\subsection*{a)}
+Wie viele Prozesse werden mit diesem Codesausschnitt zusätzlich erzeugt?
+
+\[
+\text{Anzahl} = \hspace{5cm}
+\]
+
+\subsection*{b)}
+Wie oft wird \texttt{Hello World} ausgegeben?
+
+\[
+\text{Anzahl} = \hspace{5cm}
+\]
+
+\section{Aufgabe 5: Real Time Scheduling (2.0P)}
+Gegeben sind 3 periodische Echtzeit-Tasks mit folgenden Daten:
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Task} & \textbf{Periode} & \textbf{Rechenzeit} \\
+\hline
+1 & 4 ms & 1 ms \\
+2 & 8 ms & 4 ms \\
+3 & 12 ms & 3 ms \\
+\hline
+\end{tabular}
+\end{center}
+
+Zeichnen Sie das Balkendiagramm für Deadline-Scheduling mit folgenden Bedingungen:
+\begin{itemize}[leftmargin=*]
+  \item Re-Scheduling: alle 4 ms oder wenn sich ein Task suspendiert
+  \item Bei gleichen Deadlines hat der Task mit der kürzeren Periode höhere Priorität
+\end{itemize}
+
+\begin{tcolorbox}[colback=blue!4!white,colframe=blue!55!black,title=Skizzenraster]
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Zeit (ms) & 0 & 2 & 4 & 6 & 8 & 10 & 12 & 14 & 16 & 18 & 20 & 22 & 24 \\
+\hline
+Task 1 & & & & & & & & & & & & & \\
+\hline
+Task 2 & & & & & & & & & & & & & \\
+\hline
+Task 3 & & & & & & & & & & & & & \\
+\hline
+\end{tabular}
+\end{tcolorbox}
+
+\section{Aufgabe 6: Scheduling (2.0P)}
+Gegeben sind 5 Prozesse mit folgenden Prioritäten (hohe Zahl $\rightarrow$ hohe Priorität),
+Ankunftszeiten $T_A$ und Ausführungszeiten $T_B$:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Prozess} & \textbf{Priorität} & \textbf{Ankunftszeit $T_A$} & \textbf{Ausführungszeit $T_B$} \\
+\hline
+P1 & 0 & 0 & 4 \\
+P2 & 1 & 1 & 3 \\
+P3 & 1 & 2 & 2 \\
+P4 & 0 & 5 & 3 \\
+P5 & 0 & 7 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+Annahmen:
+\begin{itemize}[leftmargin=*]
+  \item Multilevel Scheduling (nicht Multilevel Feedback)
+  \item Kein Prozess blockiert
+  \item Round Robin mit Timeslot $q=1$
+\end{itemize}
+
+Skizzieren Sie den Schedule als Balkendiagramm im folgenden Zeitraster:
+
+\begin{center}
+\begin{tabular}{|c|ccccccccccccccc|}
+\hline
+ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 \\
+\hline
+$P_1$ & & & & & & & & & & & & & & & \\
+$P_2$ & & & & & & & & & & & & & & & \\
+$P_3$ & & & & & & & & & & & & & & & \\
+$P_4$ & & & & & & & & & & & & & & & \\
+$P_5$ & & & & & & & & & & & & & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Aufgabe 7: Kurzfragen (0.5P pro Antwort, total 3P)}
+Pro Teilfrage können eine, mehrere oder keine Antworten zutreffen.
+Kreuzen Sie die richtige(n) Antwort(en) an.
+
+\begin{tcolorbox}[colback=yellow!10!white,colframe=orange!65!black,title=Bewertung]
+Wenn Sie eine Teilfrage richtig beantwortet haben (sämtliche Kästchen korrekt), erhalten Sie 0.5 Punkte,
+sonst 0 Punkte.
+\end{tcolorbox}
+
+\subsection*{a)}
+Ein Programm führt unten stehende Aktivitäten aus. Für welche dieser Aktivitäten muss vom Betriebssystem ein System-Call zur Verfügung gestellt werden?
+\begin{itemize}[leftmargin=*]
+  \item $\square$ Den Wert einer Variablen auf dem Bildschirm ausgeben
+  \item $\square$ Den Wert von zwei Variablen vergleichen
+  \item $\square$ 1 Sekunde schlafen
+  \item $\square$ Den Wert einer Integer-Variablen inkrementieren
+  \item $\square$ Den Wert einer Fliesskomma-Variablen um eins erhöhen
+\end{itemize}
+
+\subsection*{b)}
+Die Systemfunktion \texttt{pthread\_join()}:
+\begin{itemize}[leftmargin=*]
+  \item $\square$ Terminiert alle User-Level Threads
+  \item $\square$ Kann jederzeit durch \texttt{sleep(0)} ersetzt werden
+  \item $\square$ Verhindert, dass der Prozess vor Beendigung der Threads terminiert
+  \item $\square$ Blockiert die CPU, bis alle Threads terminiert haben
+\end{itemize}
+
+\subsection*{c)}
+Wieso werden System-Calls über Softwareinterrupts aufgerufen?
+\begin{itemize}[leftmargin=*]
+  \item $\square$ Weil sie schneller sind als Prozeduraufrufe
+  \item $\square$ Weil Prozeduraufrufe (CALL) nicht in den System-Mode umschalten können
+  \item $\square$ Weil Anwenderprogramme die Adressen der System-Call Routinen nicht kennen
+\end{itemize}
+
+\subsection*{d)}
+Der PCB ist ein Datenbereich:
+\begin{itemize}[leftmargin=*]
+  \item $\square$ In dem ein Prozess seine globalen Daten ablegt
+  \item $\square$ In dem vom Betriebssystem Statusinformation zum Prozess abgelegt wird
+  \item $\square$ In dem ein Prozess kleine Datenmengen effizient zwischenspeichern kann
+  \item $\square$ In dem die Prozessidentifikationsnummer abgespeichert ist
+\end{itemize}
+
+\subsection*{e)}
+Ein Zombie ist ein:
+\begin{itemize}[leftmargin=*]
+  \item $\square$ Thread, der zu keinem Prozess mehr gehört
+  \item $\square$ Prozess, der keinen Elternprozess hat
+  \item $\square$ Prozess, der als Eltern den init-Prozess hat
+  \item $\square$ Prozess, auf den der Elternprozess nicht gewartet hat (\texttt{wait()}, \texttt{waitpid()})
+  \item $\square$ Prozess, bei dem alle gestarteten Threads terminiert haben
+\end{itemize}
+
+\subsection*{f)}
+Ein Daemon ist:
+\begin{itemize}[leftmargin=*]
+  \item $\square$ Ein Virus auf Linuxsystemen
+  \item $\square$ Ein Prozess ohne Kontrollterminal
+  \item $\square$ Ein Prozess, der eine Shell als Elternprozess hat
+\end{itemize}
+
+\end{document}
